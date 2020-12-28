@@ -17,6 +17,8 @@ class ContentsController < ApplicationController
     @content = current_user.contents.build(content_params)
 
     if @content.save
+      associate_tags!
+
       redirect_to contents_path, notice: 'Content was successfully created.'
     else
       render :new
@@ -28,6 +30,8 @@ class ContentsController < ApplicationController
 
   def update
     if @content.update(content_params)
+      associate_tags!
+
       redirect_to contents_path, notice: 'Content was successfully updated.'
     else
       render :edit
@@ -47,7 +51,19 @@ class ContentsController < ApplicationController
     @content = Content.find(params[:id])
   end
 
+  def tags_params
+    params.require(:content).permit(tags: [])[:tags].reject(&:blank?)
+  end
+
   def content_params
     params.require(:content).permit(:title,:description)
+  end
+
+  def associate_tags!
+    tags = tags_params.map do |tag_name|
+      current_user.tags.where(name: tag_name).first_or_initialize
+    end
+
+    @content.tags = tags #Associa ao conteudo e cria uma nova caso nao exista
   end
 end
