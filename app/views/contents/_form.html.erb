@@ -1,7 +1,7 @@
-<% if @content.errors.any? %>
-  Erros: <%=  @content.errors.full_messages.join(', ') %>
+<% if content.errors.any? %>
+  Erros: <%=  content.errors.full_messages.join(', ') %>
 <% end %>
-<%= form_with(model: @content, local: true) do |form| %>
+<%= form_with(model: content, local: true) do |form| %>
   <div class="field">
     <%= form.label :title %>
     <%= form.text_field :title %>
